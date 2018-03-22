@@ -264,7 +264,9 @@ class TableView extends React.Component {
       data[i] = mach.slice();
     }
 
-    this.setState({savedState: data});
+    const savedRows = this.state.rows.slice();
+    const savedCols = this.state.cols.slice();
+    this.setState({savedState: data, savedRows: savedRows, savedCols: savedCols});
   }
 
   reload(){
@@ -280,7 +282,9 @@ class TableView extends React.Component {
       data[i] = mach.slice();
     }
 
-    this.setState({data: data});
+    const savedRows = this.state.savedRows.slice();
+    const savedCols = this.state.savedCols.slice();
+    this.setState({data: data, rows: savedRows, cols: savedCols});
   }
 
   render() {
