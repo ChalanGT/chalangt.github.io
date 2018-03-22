@@ -117,9 +117,10 @@ class TableView extends React.Component {
     )
   }
 
-  calculateCoeff(data){
+  calculateCoeff(dataTable){
     const coeff = new Array(this.props.sizeY);
     let nij, ni, nj;
+    const data = dataTable.reduce((prev, next) => next.map((v, i) => (prev[i] || []).concat(next[i])), []);
 
     for(let mach = 0; mach < this.props.sizeY; mach++){
       ni = data[mach].reduce((acc, cv) => acc + cv.v, 0);
@@ -137,6 +138,7 @@ class TableView extends React.Component {
         coeff[mach][comp] = nij / (ni < nj ? ni : nj);
       }
     }
+
 
     return coeff;
   }
@@ -186,14 +188,13 @@ class TableView extends React.Component {
 
 
       let newRows = this.state.clusterRows.slice();
-      const newCluster = this.state.clusterRows[max[1]] + "" + this.state.clusterRows[max[2]];
+      const newCluster = this.state.clusterRows[max[2]] + "" + this.state.clusterRows[max[1]];
       newRows.splice(max[1],1);
       newRows.splice(max[2],1);
       newRows.push(newCluster);
 
       const clusters = this.state.clusters-1;
 
-      console.log(newRows);
       this.setState({coeff: coeffRec, clusters: clusters, clusterRows: newRows});
     } else {
     const data = this.state.data.slice();
