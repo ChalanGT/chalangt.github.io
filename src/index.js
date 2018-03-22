@@ -44,7 +44,7 @@ class CoeffTable extends React.Component {
     const rows = Array(this.props.sizeY).fill().map((v,i) =>
       <tr key={"Rr" + i}><td><b>{this.props.rows[i]}</b></td>{this.props.coeff[i].map((v,j) =>
         <td key={"Dr" + i + j}>{v.toFixed(2)}</td>)}</tr>);
-    
+
     return (
       <Table condensed bordered>
         <thead>
@@ -177,7 +177,7 @@ class TableView extends React.Component {
         for(let j = 0; j < this.state.clusters; j++)
           if(j !== max[1] && j !== max[2])
             arr.push(coeff[i][j]);
-        
+
         arr.push(clusterComb[ni++]);
         coeffRec.push(arr.slice());
       }
@@ -196,13 +196,13 @@ class TableView extends React.Component {
       console.log(newRows);
       this.setState({coeff: coeffRec, clusters: clusters, clusterRows: newRows});
     } else {
-      const data = this.state.data.slice();
+    const data = this.state.data.slice();
       const coeff = this.calculateCoeff(data);
       const clusterRows = this.state.rows.slice(0,this.props.sizeY);
 
       this.setState({coeff: coeff, hasCoeff: true, clusters: coeff.length, clusterRows: clusterRows});
     }
-  }
+    }
 
   kingsAlgoStep(isCol){
     const dataClone = this.state.data.slice();
@@ -262,7 +262,7 @@ class TableView extends React.Component {
       }
       data[i] = mach.slice();
     }
-    
+
     this.setState({savedState: data});
   }
 
@@ -284,26 +284,32 @@ class TableView extends React.Component {
 
   render() {
     const heads = Array(this.props.sizeX).fill().map((v,i) => <th key={"H" + i} className="text-center">{this.state.cols[i]}</th>);
-    const rows = Array(this.props.sizeY).fill().map((v,i) => <tr key={"R" + i}><td>{this.state.rows[i]}</td>{this.createRow(i)}</tr>);
+    const rows = Array(this.props.sizeY).fill().map((v,i) => <tr key={"R" + i}><td><b>{this.state.rows[i]}</b></td>{this.createRow(i)}</tr>);
 
     return (
       <div>
         <Grid>
-          <Row>
+          <Row className="with-margin">
             {this.props.algo === 1 &&
-                <Row>
+                <div>
                   <Col md={2}>
                     <Button onClick={() => this.kingsAlgoStep(true)}>Run Columns</Button>
                   </Col>
                   <Col md={2}>
                     <Button onClick={() => this.kingsAlgoStep(false)}>Run Rows</Button>
                   </Col>
-                </Row>
+                </div>
             }
             {this.props.algo === 2 &&
-                <Col md={2}>
-                  <Button onClick={() => this.coeffStep(this.state.hasCoeff)}>{this.state.hasCoeff ? "Step" : "Calculate Coefficients"}</Button>
-                </Col>
+                <div>
+                  <Col md={2}>
+                    <Button onClick={() => this.coeffStep(false)}>Calculate Coefficients</Button>
+                  </Col>
+
+                  <Col md={2}>
+                    <Button className={this.state.hasCoeff ? 'enabled' : 'disabled'}onClick={() => this.coeffStep(this.state.hasCoeff)}>Step</Button>
+                  </Col>
+                </div>
             }
 
             <Col md={2}>
@@ -311,16 +317,15 @@ class TableView extends React.Component {
             </Col>
 
             {this.state.savedState !== null &&
-                <Row>
-                  <Col md={2}>
-                    <Button onClick={() => this.reload()}>Reload State</Button>
-                  </Col>
-                </Row>
+                <Col md={2}>
+                  <Button onClick={() => this.reload()}>Reload State</Button>
+                </Col>
             }
           </Row>
-          <Row>
-            <Col md={12}>
-              <Table condensed bordered>
+          <hr/>
+          <Row className="with-margin">
+            <Col md={7} style={{borderRight: '1px dashed #333'}}>
+              <Table condensed>
                 <thead>
                   <tr>
                     <th></th>
@@ -335,7 +340,9 @@ class TableView extends React.Component {
           </Row>
           {this.state.hasCoeff &&
               <Row>
-                <CoeffTable sizeY={this.state.clusters} rows={this.state.clusterRows} coeff={this.state.coeff}/>
+                <Col md={7} style={{borderRight: '1px dashed #333'}}>
+                  <CoeffTable sizeY={this.state.clusters} rows={this.state.clusterRows} coeff={this.state.coeff}/>
+                </Col>
               </Row>
           }
         </Grid>
@@ -381,7 +388,7 @@ class Chalan extends React.Component {
               <h2>Ajustes</h2>
             </Col>
           </Row>
-          <Row>
+          <Row className="with-margin">
             <Col md={2}>
               <DropdownButton
                 bsStyle="primary"
