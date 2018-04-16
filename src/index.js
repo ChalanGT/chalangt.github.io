@@ -241,16 +241,6 @@ class TableView extends React.Component {
 
   }
 
-  /*
-   * 
-  {(this.props.algo === 2) &&
-      <EntryText nameID={this.state.data[i][j].v} value={this.state.data[i][j].v}
-        onChange={(e) => this.handleChange(i,j,e)}
-        type={this.props.algo}
-      />}
-   *
-   */
-
   createRow(j){
     return (
       Array(this.props.sizeX).fill().map((v,i) =>
@@ -346,7 +336,13 @@ class TableView extends React.Component {
           </Row>
           <hr/>
           <Row className="with-margin">
-            <Col md={7} style={{borderRight: '1px dashed #333'}}>
+            <Col md={3}>
+              <div style={{textAlign:'center'}}>
+                <h3>Instructions for {this.props.algo === 1 ? "King's Algorithm" : "Coefficient Clustering"}</h3>
+                {instructions.map((l,i) => <div key={i}>{l}</div>)}
+              </div>
+            </Col>
+            <Col md={9} style={{borderLeft: '1px dashed #333'}}>
               <Table condensed>
                 <thead>
                   <tr>
@@ -359,12 +355,6 @@ class TableView extends React.Component {
                 </tbody>
               </Table>
             </Col>
-            <Col md={5}>
-              <div style={{textAlign:'center'}}>
-                <h3>Instructions for {this.props.algo === 1 ? "King's Algorithm" : "Coefficient Clustering"}</h3>
-              <div>{instructions.map((l,i) => <p key={i}>{l}</p>)}</div>
-            </div>
-          </Col>
         </Row>
         {this.state.hasCoeff &&
             <Row>
@@ -406,6 +396,7 @@ class Chalan extends React.Component {
   }
 
   render() {
+    
     return (
       <div className="tableview">
         <h1 className="page-header">Chalán del Tec</h1>
