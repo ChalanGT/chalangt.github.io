@@ -2,6 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+import { Provider as AlertProvider } from 'react-alert';
+import { Alert } from 'react-alert';
+import AlertTemplate from "react-alert-template-basic";
+
 var Table = require('react-bootstrap/lib/Table');
 var Button = require('react-bootstrap/lib/Button');
 
@@ -15,6 +19,11 @@ var FormControl = require('react-bootstrap/lib/FormControl');
 
 const selected = {color: 'white', backgroundColor: 'black'};
 const base = {color: 'black', backgroundColor: 'white'};
+
+const options = {
+  timeout: 5000,
+  position: "bottom center"
+};
 
 // ==================================================================================================
 
@@ -160,11 +169,15 @@ class TableView extends React.Component {
     if(hasCoeff){
       const coeff = this.state.coeff.slice();
 
-      let max = [0,0,0];
+      let max = [-1,-1,-1];
       for(let i = 1; i < this.state.clusters; i++){
         for(let j = 0; j < i; j++){
           max = coeff[i][j] > max[0] ? [coeff[i][j],i,j] : max;
         }
+      }
+
+      if(max[0] === 0){
+        return;
       }
 
       const clusterComb = this.mergeClusters(coeff,max[1],max[2]);
@@ -197,13 +210,13 @@ class TableView extends React.Component {
 
       this.setState({coeff: coeffRec, clusters: clusters, clusterRows: newRows});
     } else {
-    const data = this.state.data.slice();
+      const data = this.state.data.slice();
       const coeff = this.calculateCoeff(data);
       const clusterRows = this.state.rows.slice(0,this.props.sizeY);
 
       this.setState({coeff: coeff, hasCoeff: true, clusters: coeff.length, clusterRows: clusterRows});
     }
-    }
+  }
 
   kingsAlgoStep(isCol){
     const dataClone = this.state.data.slice();
@@ -290,6 +303,10 @@ class TableView extends React.Component {
   render() {
     const heads = Array(this.props.sizeX).fill().map((v,i) => <th key={"H" + i} className="text-center">{this.state.cols[i]}</th>);
     const rows = Array(this.props.sizeY).fill().map((v,i) => <tr key={"R" + i}><td><b>{this.state.rows[i]}</b></td>{this.createRow(i)}</tr>);
+    const instructions = this.props.algo === 1 ? 
+      ["Input column and row totals.","Mark the boxes where the input is 1.","","You can save the current layout with the Save State button."] :
+      ["Input column and row totals.","Mark the boxes where the input is 1.","Calculate the coefficients from the layout.","Use the Step button to merge the highest similarity group."];
+
 
     return (
       <div>
@@ -312,7 +329,7 @@ class TableView extends React.Component {
                   </Col>
 
                   <Col md={2}>
-                    <Button className={this.state.hasCoeff ? 'enabled' : 'disabled'}onClick={() => this.coeffStep(this.state.hasCoeff)}>Step</Button>
+                    <Button className={this.state.hasCoeff ? 'enabled' : 'disabled'} onClick={() => this.coeffStep(this.state.hasCoeff)}>Step</Button>
                   </Col>
                 </div>
             }
@@ -342,16 +359,22 @@ class TableView extends React.Component {
                 </tbody>
               </Table>
             </Col>
-          </Row>
-          {this.state.hasCoeff &&
-              <Row>
-                <Col md={7} style={{borderRight: '1px dashed #333'}}>
-                  <CoeffTable sizeY={this.state.clusters} rows={this.state.clusterRows} coeff={this.state.coeff}/>
-                </Col>
-              </Row>
-          }
-        </Grid>
-      </div>
+            <Col md={5}>
+              <div style={{textAlign:'center'}}>
+                <h3>Instructions for {this.props.algo === 1 ? "King's Algorithm" : "Coefficient Clustering"}</h3>
+              <div>{instructions.map((l,i) => <p key={i}>{l}</p>)}</div>
+            </div>
+          </Col>
+        </Row>
+        {this.state.hasCoeff &&
+            <Row>
+              <Col md={7} style={{borderRight: '1px dashed #333'}}>
+                <CoeffTable sizeY={this.state.clusters} rows={this.state.clusterRows} coeff={this.state.coeff}/>
+              </Col>
+            </Row>
+        }
+      </Grid>
+    </div>
     );
   }
 }
@@ -390,14 +413,14 @@ class Chalan extends React.Component {
         <Grid>
           <Row>
             <Col md={2}>
-              <h2>Ajustes</h2>
+              <h2>Setup</h2>
             </Col>
           </Row>
           <Row className="with-margin">
             <Col md={2}>
               <DropdownButton
                 bsStyle="primary"
-                title="Algoritmo"
+                title="Algorithm"
                 key={0}
                 id={`dropdown-basic-${0}`}
                 onSelect={(k, e) => this.setState({algo: k})}
@@ -407,10 +430,10 @@ class Chalan extends React.Component {
               </DropdownButton>
             </Col>
             <Col md={2}>
-              <FormControl type="number" name="Y" placeholder="Máquinas" defaultValue={this.state.sizeY} onChange={(e) => this.handleInput(e)}/>
+              <FormControl type="number" name="Y" placeholder="Machines" defaultValue={this.state.sizeY} onChange={(e) => this.handleInput(e)}/>
             </Col>
             <Col md={2}>
-              <FormControl type="number" name="X" placeholder="Piezas" defaultValue={this.state.sizeX} onChange={(e) => this.handleInput(e)}/>
+              <FormControl type="number" name="X" placeholder="Pieces" defaultValue={this.state.sizeX} onChange={(e) => this.handleInput(e)}/>
             </Col>
           </Row>
 
@@ -430,7 +453,8 @@ class Chalan extends React.Component {
 // ========================================
 
 ReactDOM.render(
-  <Chalan />,
+  <AlertProvider template={AlertTemplate} {...options}>
+    <Chalan />
+  </AlertProvider>,
   document.getElementById('root')
 );
-
