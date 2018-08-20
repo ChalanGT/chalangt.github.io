@@ -304,45 +304,45 @@ class TableView extends React.Component {
           <Row className="with-margin">
             {this.props.algo === 1 &&
                 <div>
-                  <Col md={2}>
+                  <Col xs={2}>
                     <Button onClick={() => this.kingsAlgoStep(true)}>Run Columns</Button>
                   </Col>
-                  <Col md={2}>
+                  <Col xs={2}>
                     <Button onClick={() => this.kingsAlgoStep(false)}>Run Rows</Button>
                   </Col>
                 </div>
             }
             {this.props.algo === 2 &&
                 <div>
-                  <Col md={2}>
+                  <Col xs={2}>
                     <Button onClick={() => this.coeffStep(false)}>Calculate Coefficients</Button>
                   </Col>
 
-                  <Col md={2}>
+                  <Col xs={2}>
                     <Button className={this.state.hasCoeff ? 'enabled' : 'disabled'} onClick={() => this.coeffStep(this.state.hasCoeff)}>Step</Button>
                   </Col>
                 </div>
             }
 
-            <Col md={2}>
+            <Col xs={2}>
               <Button onClick={() => this.saveState()}>Save State</Button>
             </Col>
 
             {this.state.savedState !== null &&
-                <Col md={2}>
+                <Col xs={2}>
                   <Button onClick={() => this.reload()}>Reload State</Button>
                 </Col>
             }
           </Row>
           <hr/>
           <Row className="with-margin">
-            <Col md={3}>
+            <Col xs={3}>
               <div style={{textAlign:'center'}}>
                 <h3>Instructions for {this.props.algo === 1 ? "King's Algorithm" : "Coefficient Clustering"}</h3>
                 {instructions.map((l,i) => <div key={i}>{l}</div>)}
               </div>
             </Col>
-            <Col md={9} style={{borderLeft: '1px dashed #333'}}>
+            <Col xs={9} style={{borderLeft: '1px dashed #333'}}>
               <Table condensed>
                 <thead>
                   <tr>
@@ -358,7 +358,7 @@ class TableView extends React.Component {
         </Row>
         {this.state.hasCoeff &&
             <Row>
-              <Col md={7} style={{borderRight: '1px dashed #333'}}>
+              <Col xs={7} style={{borderRight: '1px dashed #333'}}>
                 <CoeffTable sizeY={this.state.clusters} rows={this.state.clusterRows} coeff={this.state.coeff}/>
               </Col>
             </Row>
@@ -403,12 +403,12 @@ class Chalan extends React.Component {
 
         <Grid>
           <Row>
-            <Col md={2}>
+            <Col xs={2}>
               <h2>Setup</h2>
             </Col>
           </Row>
           <Row className="with-margin">
-            <Col md={2}>
+            <Col xs={2}>
               <DropdownButton
                 bsStyle="primary"
                 title="Algorithm"
@@ -420,10 +420,10 @@ class Chalan extends React.Component {
                 <MenuItem eventKey={2}>Coefficient Clustering</MenuItem>
               </DropdownButton>
             </Col>
-            <Col md={2}>
+            <Col xs={2}>
               <FormControl type="number" name="Y" placeholder="Machines" defaultValue={this.state.sizeY} onChange={(e) => this.handleInput(e)}/>
             </Col>
-            <Col md={2}>
+            <Col xs={2}>
               <FormControl type="number" name="X" placeholder="Pieces" defaultValue={this.state.sizeX} onChange={(e) => this.handleInput(e)}/>
             </Col>
           </Row>
